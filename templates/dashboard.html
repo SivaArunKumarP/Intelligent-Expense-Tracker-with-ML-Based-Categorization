@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Expense Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+
+        :root {
+            --primary: #00c896;
+            --primary-dark: #00a672;
+            --text: #e0e0e0;
+            --bg-dark: #121212;
+            --card-bg: rgba(40, 40, 40, 0.95);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 30%;
+        }
+
+        .stat-card i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .stat-card h3 {
+            font-size: 18px;
+            margin: 10px 0 5px;
+        }
+
+        .stat-card p {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .chart-container {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        canvas {
+            background: #222;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard</h1>
+
+        <!-- ✅ Expense Summary Cards -->
+        <div class="stats">
+            <div class="stat-card">
+                <i class="fas fa-wallet"></i>
+                <h3>Total Expense</h3>
+                <p>₹{{ total_expense }}</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>This Month</h3>
+                <p>₹{{ month_expense }}</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar-day"></i>
+                <h3>Today</h3>
+                <p>₹{{ today_expense }}</p>
+            </div>
+        </div>
+
+        <!-- ✅ Spending Insights -->
+        <div class="chart-container">
+            <h3>Spending by Category</h3>
+            <canvas id="categoryChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h3>Monthly Expense Trend</h3>
+            <canvas id="trendChart"></canvas>
+        </div>
+
+        <a href="{{ url_for('add_expense') }}" class="btn">Add Expense</a>
+    </div>
+
+    <script>
+        // Fetch data from Flask
+        var categories = JSON.parse('{{ category_labels | tojson | safe }}');  
+        var categoryAmounts = JSON.parse('{{ category_values | tojson | safe }}');
+
+        var months = JSON.parse('{{ month_labels | tojson | safe }}');  
+        var monthlyExpenses = JSON.parse('{{ month_values | tojson | safe }}');
+
+        // ✅ Bar Chart: Expenses by Category
+        var ctx1 = document.getElementById('categoryChart').getContext('2d');
+        var categoryChart = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: categories,
+                datasets: [{
+                    label: 'Amount Spent',
+                    data: categoryAmounts,
+                    backgroundColor: 'rgba(0, 200, 150, 0.6)',
+                    borderColor: 'rgba(0, 200, 150, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+
+        // ✅ Line Chart: Monthly Expense Trend
+        var ctx2 = document.getElementById('trendChart').getContext('2d');
+        var trendChart = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Total Monthly Spending',
+                    data: monthlyExpenses,
+                    borderColor: 'rgba(255, 204, 0, 1)',
+                    backgroundColor: 'rgba(255, 204, 0, 0.3)',
+                    fill: true,
+                    borderWidth: 2
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+    </script>
+</body>
+</html>

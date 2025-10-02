@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Expense Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        /* --- General Styles (Consistent with Registration Page) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Montserrat:wght@400;600;700&family=Quicksand:wght@400;500;600&display=swap');
+
+        :root {
+            --primary: #00c896;
+            --primary-dark: #00a672;
+            --primary-light: #00ffbf;
+            --accent: #ffcc00;
+            --text: #e0e0e0;
+            --bg-dark: #121212;
+            --card-bg: rgba(40, 40, 40, 0.95);
+            --error: #ff4d4d;
+            --input-bg: #222;
+            --input-border: #333;
+            --success: #4BB543;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(0, 200, 150, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 204, 0, 0.05) 0%, transparent 20%);
+            display: flex;
+            flex-direction: column; /* Changed to column */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 80%; /* Adjusted width */
+            max-width: 600px; /* Added max-width */
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: borderGlow 3s linear infinite;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-size: 32px; /* Increased size */
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 1px;
+            animation: pulseText 3s infinite alternate;
+        }
+
+        h2 {
+            color: var(--text);
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        /* --- Button Styles (Modified) --- */
+        .btn-container {
+            display: flex;
+            justify-content: center; /* Center the buttons */
+            gap: 20px; /* Space between buttons */
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 15px 30px; /* Increased padding */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px; /* Increased size */
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            text-decoration: none; /* Remove underline from links */
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 200, 150, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 0%; }
+        }
+
+        @keyframes pulseText {
+            0% {
+                opacity: 0.8;
+                letter-spacing: 1px;
+            }
+            100% {
+                opacity: 1;
+                letter-spacing: 1.2px;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .btn {
+                padding: 12px 24px;
+                font-size: 16px;
+            }
+
+            .btn-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome!</h1>
+        <h2>Hello, {{ full_name }}</h2> <!-- ✅ Show Full Name (from backend) -->
+
+        <div class="btn-container">
+            <a href="{{ url_for('dashboard') }}" class="btn" style="animation: slideInLeft 0.5s ease forwards;">Dashboard</a>
+            <a href="{{ url_for('add_expense') }}" class="btn" style="animation: slideInRight 0.5s ease forwards;">Add Expense</a>
+        </div>
+    </div>
+</body>
+
+</html>
